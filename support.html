@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - Fim It</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #2d3748;
+            --text-light: #718096;
+            --header-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-color: #460a74;
+            --section-bg: #f8f9fa;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.6;
+        }
+        a { color: var(--accent-color); text-decoration: none; font-weight: 500; }
+        a:hover { text-decoration: underline; }
+        
+        /* Layout */
+        .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Header */
+        header { 
+            background: var(--header-bg); 
+            padding: 20px 0; 
+            border-bottom: 1px solid var(--border-color); 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 60px;
+        }
+        header .container { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; }
+        .logo { 
+            font-weight: 800; 
+            font-size: 1.5rem; 
+            color: var(--accent-color); 
+            text-decoration: none; 
+            letter-spacing: -0.5px;
+        }
+        nav a { margin-left: 30px; color: var(--text-color); font-weight: 500; font-size: 0.95rem; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-color); text-decoration: none; }
+        
+        /* Footer */
+        footer { background: var(--section-bg); padding: 60px 0; margin-top: 80px; border-top: 1px solid var(--border-color); font-size: 0.9rem; color: var(--text-light); }
+        .footer-content { max-width: 600px; margin: 0 auto; text-align: center; }
+        .footer-about { margin-bottom: 24px; line-height: 1.6; }
+        .footer-links { margin-bottom: 24px; }
+        .footer-links a { margin: 0 12px; color: var(--text-light); }
+        .footer-links a:hover { color: var(--accent-color); }
+        
+        /* Content */
+        h1 { 
+            color: var(--accent-color); 
+            font-size: 3rem; 
+            margin-bottom: 2rem; 
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-align: center;
+        }
+        h2 { color: #1a202c; font-size: 1.8rem; margin-top: 3rem; margin-bottom: 1.5rem; font-weight: 700; }
+        p { margin-bottom: 1.5rem; font-size: 1.1rem; }
+        
+        .support-box {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 60px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .support-box h3 { margin-top: 0; color: #1a202c; }
+        
+        .support-email {
+            display: inline-block;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: var(--accent-color);
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin: 20px 0;
+            transition: transform 0.2s;
+        }
+        .support-email:hover {
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(70, 10, 116, 0.2);
+        }
+        
+        .faq-item { 
+            margin-bottom: 24px; 
+            background: var(--section-bg);
+            padding: 24px;
+            border-radius: 12px;
+        }
+        .faq-question { font-weight: 700; font-size: 1.15rem; color: #1a202c; margin-bottom: 12px; }
+        .faq-answer { color: #4a5568; font-size: 1rem; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header .container { flex-direction: column; gap: 15px; }
+            nav a { margin: 0 10px; }
+            h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">Fim It</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="support.html">Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Support</h1>
+
+        <p style="text-align: center; max-width: 600px; margin: 0 auto 40px;">Need help with Fim It, .fim files, hotspots, or analytics? You’re in the right place. Browse the FAQs below or contact us directly.</p>
+
+        <div class="support-box">
+            <h3>Contact Support</h3>
+            <p>We're here to help with any questions or issues.</p>
+            <a href="mailto:fimdevelopers@gmail.com" class="support-email">fimdevelopers@gmail.com</a>
+            <p style="font-size: 0.9rem; margin-top: 10px; color: var(--text-light);">For privacy or legal questions, please also review our Privacy Policy and Terms & Conditions.</p>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <div class="faq-question">Q1: What is Fim It?</div>
+            <div class="faq-answer">A1: Fim It (Framed Interactive Media It) is an app that lets you create and view interactive images using the .fim format, with tappable hotspots and built-in analytics.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q2: What is a .fim file?</div>
+            <div class="faq-answer">A2: A .fim file is a custom interactive image format that contains hotspots, embedded actions, and analytics tracking. It works inside the Fim It app.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q3: What data does Fim It collect?</div>
+            <div class="faq-answer">A3: Fim It collects only hotspot interaction analytics such as hotspot taps, link clicks, and engagement counts. It does not collect personal information like names or payment details.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q4: Why is my analytics showing zero?</div>
+            <div class="faq-answer">A4: Analytics only update when hotspots are added correctly, the .fim file is opened by a viewer, and the device is online to sync. If you still see zero, check your hotspot setup or contact support.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q5: How does the free trial work?</div>
+            <div class="faq-answer">A5: Fim It offers a 7-day free trial with full access to analytics. After the trial, continued use of analytics features requires a paid subscription.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q6: How do I cancel my subscription?</div>
+            <div class="faq-answer">A6: Subscriptions are managed through the Apple App Store or Google Play Store. You must cancel from your device’s subscription settings. The Fim It team cannot cancel subscriptions manually.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q7: How do I report a bug or issue?</div>
+            <div class="faq-answer">A7: You can email fimdevelopers@gmail.com with your device model, operating system version, and a description of the problem. Screenshots or screen recordings are helpful but optional.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q8: Can I share .fim files with others?</div>
+            <div class="faq-answer">A8: Yes. You can share .fim files via messaging apps, email, or cloud storage. The recipient needs the Fim It app installed to open them.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q9: Is my data safe?</div>
+            <div class="faq-answer">A9: Analytics data is stored on secure servers located in India and protected using modern security practices. The app is designed to follow global privacy standards such as GDPR and CCPA.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q10: Where can I read the Privacy Policy and Terms?</div>
+            <div class="faq-answer">A10: You can find direct links to the Privacy Policy and Terms & Conditions in the footer of every page on this website.</div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-about">Fim It introduces the .fim format — a new kind of image that responds, reveals, and reacts. Add hotspots, guide your viewers, and turn visuals into experiences.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms & Conditions</a>
+                </div>
+                <p class="copyright">&copy; <span id="year"></span> Fim It</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fim It - Turn visuals into experiences</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #2d3748;
+            --text-light: #718096;
+            --header-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-color: #460a74;
+            --accent-white: #ffffff;
+            --section-bg: #f8f9fa;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.6;
+        }
+        a { color: var(--accent-color); text-decoration: none; font-weight: 500; }
+        a:hover { text-decoration: underline; }
+        
+        /* Layout */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Header */
+        header { 
+            background: var(--header-bg); 
+            padding: 20px 0; 
+            border-bottom: 1px solid var(--border-color); 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { 
+            font-weight: 800; 
+            font-size: 1.5rem; 
+            color: var(--accent-color); 
+            text-decoration: none; 
+            letter-spacing: -0.5px;
+        }
+        nav a { margin-left: 30px; color: var(--text-color); font-weight: 500; font-size: 0.95rem; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-color); text-decoration: none; }
+        
+        /* Footer */
+        footer { background: var(--section-bg); padding: 60px 0; margin-top: 80px; border-top: 1px solid var(--border-color); font-size: 0.9rem; color: var(--text-light); }
+        .footer-content { max-width: 600px; margin: 0 auto; text-align: center; }
+        .footer-about { margin-bottom: 24px; line-height: 1.6; }
+        .footer-links { margin-bottom: 24px; }
+        .footer-links a { margin: 0 12px; color: var(--text-light); }
+        .footer-links a:hover { color: var(--accent-color); }
+        
+        /* Components */
+        h1, h2, h3 { color: #1a202c; margin-top: 0; line-height: 1.2; }
+        h1 { font-size: 2.5rem; margin-bottom: 1rem; font-weight: 800; letter-spacing: -1px; }
+        h2 { font-size: 2rem; margin-bottom: 1rem; margin-top: 3rem; font-weight: 700; }
+        p { margin-bottom: 1.5rem; }
+        
+        .btn {
+            display: inline-block;
+            background: #ffffff;
+            color: var(--accent-color);
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); text-decoration: none; }
+        
+        /* Home Page Specific */
+        .hero { 
+            text-align: center; 
+            padding: 100px 0 120px; 
+            background-color: var(--accent-color);
+            color: #ffffff;
+            margin-bottom: 40px;
+        }
+        .hero h1 { color: #ffffff; font-size: 3.5rem; margin-bottom: 24px; }
+        .hero p { font-size: 1.25rem; color: rgba(255,255,255, 0.9); max-width: 700px; margin: 0 auto 30px; }
+        .hero-note { font-size: 0.95rem; color: rgba(255,255,255, 0.7); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+        
+        .section-title { text-align: center; max-width: 700px; margin: 0 auto 50px; }
+        .section-title h2 { color: var(--accent-color); }
+        .section-title p { color: var(--text-light); font-size: 1.1rem; }
+
+        .demo-section { padding: 60px 0; }
+        .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; margin-top: 40px; }
+        .demo-card { 
+            background: #ffffff; 
+            border-radius: 16px; 
+            overflow: hidden; 
+            position: relative; 
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .demo-card:hover { transform: translateY(-5px); box-shadow: var(--card-shadow-hover); }
+        
+        .image-container { position: relative; width: 100%; height: 300px; background: #edf2f7; overflow: hidden; }
+        .image-container img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+        .demo-card:hover img { transform: scale(1.05); }
+        
+        .hotspot {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+            z-index: 10;
+            transition: transform 0.2s;
+        }
+        .hotspot:hover { transform: scale(1.2); background: var(--accent-color); border-color: #ffffff; }
+        
+        /* Positioning hotspots */
+        .hotspot-1 { top: 60%; left: 40%; }
+        .hotspot-2 { top: 30%; left: 50%; }
+        .hotspot-3 { top: 70%; left: 60%; }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+        
+        .product-label {
+            position: absolute;
+            background: #ffffff;
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+            z-index: 20;
+            transform: translate(-50%, -140%) scale(0.9); /* Center above hotspot */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 1px solid var(--border-color);
+        }
+        /* Position labels relative to their hotspots */
+        .label-1 { top: 60%; left: 40%; }
+        .label-2 { top: 30%; left: 50%; }
+        .label-3 { top: 70%; left: 60%; }
+        
+        .product-label.visible { opacity: 1; transform: translate(-50%, -140%) scale(1); pointer-events: auto; }
+        .product-label::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: #ffffff transparent transparent transparent;
+        }
+        
+        /* Features */
+        .features-section { padding: 80px 0; background-color: var(--section-bg); margin-top: 80px; border-radius: 20px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 50px; }
+        .feature-item { background: #fff; padding: 30px; border-radius: 12px; box-shadow: var(--card-shadow); }
+        .feature-item h3 { font-size: 1.25rem; margin-bottom: 15px; color: var(--accent-color); }
+        .feature-item p { font-size: 1rem; color: var(--text-light); margin-bottom: 0; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero { padding: 60px 0 80px; border-radius: 0 0 20px 20px; }
+            .hero h1 { font-size: 2.5rem; }
+            header .container { flex-direction: column; gap: 15px; }
+            nav a { margin: 0 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">Fim It</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="support.html">Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <div style="background-color: var(--accent-color);">
+        <section class="hero">
+            <div class="container">
+                <h1>Turn your images into<br>interactive experiences.</h1>
+                <p>Fim It uses the .fim (Framed Interactive Media) format to bring images to life with tappable hotspots, actions, and built-in engagement analytics.</p>
+                <p class="hero-note">Available on Android and iOS</p>
+            </div>
+        </section>
+    </div>
+
+    <div class="container">
+        <section class="demo-section">
+            <div class="section-title">
+                <h2>See it in action</h2>
+                <p>Tap the pulsing hotspots below to reveal details.</p>
+            </div>
+            
+            <div class="demo-grid">
+                <!-- Card 1: Interior -->
+                <div class="demo-card">
+                    <div class="image-container">
+                        <img src="/img/interior.jpg" alt="Modern Interior">
+                        <div class="hotspot hotspot-1"></div>
+                        <div class="product-label label-1">Sofa – Nordic Comfort Set</div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Fashion -->
+                <div class="demo-card">
+                    <div class="image-container">
+                        <img src="/img/fashion.jpg" alt="Fashion Dress">
+                        <div class="hotspot hotspot-2"></div>
+                        <div class="product-label label-2">Summer Floral Dress</div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Scenery -->
+                <div class="demo-card">
+                    <div class="image-container">
+                        <img src="/img/scenery.jpg" alt="Mountain Scenery">
+                        <div class="hotspot hotspot-3"></div>
+                        <div class="product-label label-3">Mountain View Canvas Print</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section class="features-section">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3>Interactive .fim Format</h3>
+                    <p>Embed tappable hotspots directly into your images with the .fim format, and turn static visuals into guided experiences.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Hotspot & Link Analytics</h3>
+                    <p>Measure how viewers interact with your images using hotspot tap counts, link clicks, and per-image engagement metrics.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Offline Friendly Viewing</h3>
+                    <p>Open and explore .fim files offline with no limitations. Your analytics update automatically when you reconnect.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-about">Fim It introduces the .fim format — a new kind of image that responds, reveals, and reacts. Add hotspots, guide your viewers, and turn visuals into experiences.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms & Conditions</a>
+                </div>
+                <p class="copyright">&copy; <span id="year"></span> Fim It</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Set year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Hotspot interaction
+        document.querySelectorAll('.hotspot').forEach(hotspot => {
+            hotspot.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const label = this.nextElementSibling;
+                
+                // Hide all other labels
+                document.querySelectorAll('.product-label').forEach(l => {
+                    if (l !== label) l.classList.remove('visible');
+                });
+                
+                // Toggle current
+                label.classList.toggle('visible');
+            });
+        });
+
+        // Close labels when clicking elsewhere
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.product-label').forEach(l => l.classList.remove('visible'));
+        });
+    </script>
+</body>
+</html>

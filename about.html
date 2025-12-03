@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Fim It</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #2d3748;
+            --text-light: #718096;
+            --header-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-color: #460a74;
+            --section-bg: #f8f9fa;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.7;
+        }
+        a { color: var(--accent-color); text-decoration: none; font-weight: 500; }
+        a:hover { text-decoration: underline; }
+        
+        /* Layout */
+        .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Header */
+        header { 
+            background: var(--header-bg); 
+            padding: 20px 0; 
+            border-bottom: 1px solid var(--border-color); 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 60px;
+        }
+        header .container { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; }
+        .logo { 
+            font-weight: 800; 
+            font-size: 1.5rem; 
+            color: var(--accent-color); 
+            text-decoration: none; 
+            letter-spacing: -0.5px;
+        }
+        nav a { margin-left: 30px; color: var(--text-color); font-weight: 500; font-size: 0.95rem; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-color); text-decoration: none; }
+        
+        /* Footer */
+        footer { background: var(--section-bg); padding: 60px 0; margin-top: 80px; border-top: 1px solid var(--border-color); font-size: 0.9rem; color: var(--text-light); }
+        .footer-content { max-width: 600px; margin: 0 auto; text-align: center; }
+        .footer-about { margin-bottom: 24px; line-height: 1.6; }
+        .footer-links { margin-bottom: 24px; }
+        .footer-links a { margin: 0 12px; color: var(--text-light); }
+        .footer-links a:hover { color: var(--accent-color); }
+        
+        /* Content */
+        h1 { 
+            color: var(--accent-color); 
+            font-size: 3rem; 
+            margin-bottom: 2rem; 
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-align: center;
+        }
+        
+        section { margin-bottom: 50px; }
+        
+        h2 { 
+            color: #1a202c; 
+            font-size: 1.75rem; 
+            margin-top: 0; 
+            margin-bottom: 1.25rem; 
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+        h2::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 4px;
+            background: var(--accent-color);
+            margin-top: 8px;
+            border-radius: 2px;
+        }
+
+        h3 { color: #2d3748; font-size: 1.4rem; margin-top: 2rem; margin-bottom: 1rem; font-weight: 600; }
+        p { margin-bottom: 1.5rem; font-size: 1.1rem; color: var(--text-color); }
+        ul { margin-bottom: 1.5rem; padding-left: 20px; }
+        li { margin-bottom: 0.75rem; color: var(--text-color); }
+        li::marker { color: var(--accent-color); }
+        
+        /* Intro box */
+        .intro-box {
+            background: var(--section-bg);
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 60px;
+            border-left: 6px solid var(--accent-color);
+        }
+        .intro-box p:last-child { margin-bottom: 0; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header .container { flex-direction: column; gap: 15px; }
+            nav a { margin: 0 10px; }
+            h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">Fim It</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="support.html">Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>About Fim It</h1>
+
+        <div class="intro-box">
+            <p style="font-size: 1.2rem; font-weight: 500;">Fim It is built around a simple idea — images should do more than sit still. With the innovative .fim format, Fim It turns ordinary visuals into interactive experiences filled with actions, insights, and motion.</p>
+            <p>Whether you're a creator, educator, seller, designer, or storyteller, Fim It helps you communicate more clearly and creatively by transforming static images into dynamic, guided, and measurable experiences.</p>
+        </div>
+
+        <section>
+            <h2>What is the .fim Format?</h2>
+            <p>The .fim (Framed Interactive Media) format is a next-generation interactive image file designed specifically for rich visual communication.</p>
+            <p>A .fim file can contain:</p>
+            <ul>
+                <li>Hotspots</li>
+                <li>Clickable links</li>
+                <li>Tooltips and notes</li>
+                <li>Actions and guidance</li>
+                <li>Interaction analytics</li>
+            </ul>
+            <p>With Fim It, users don’t just look at an image—they explore it.</p>
+        </section>
+
+        <section>
+            <h2>Interactive Hotspots & Animation</h2>
+            <p>Hotspots are the heart of the .fim experience. You can place hotspots over any part of an image to reveal details, highlight features, open links, and guide users.</p>
+            <p>Fim It also supports subtle animations like pulsing or glowing hotspots, so viewers know exactly where to tap. This brings a modern, app-like feel to your interactive images without making them overwhelming.</p>
+        </section>
+
+        <section>
+            <h2>Offline-Friendly Viewing</h2>
+            <p>Fim It is built to work anywhere, anytime. You can open .fim images fully offline, and hotspots and animations continue to work without an internet connection. When you go online again, analytics sync in the background.</p>
+        </section>
+
+        <section>
+            <h2>Built-In Analytics</h2>
+            <p>Fim It provides simple, focused analytics so you can understand how people use your images. You can track hotspot taps, link clicks, and engagement for each .fim file.</p>
+            <p>During the 7-day free trial, all analytics features are unlocked so you can see the full power of interactive visuals.</p>
+        </section>
+
+        <section>
+            <h2>Who Is Fim It For?</h2>
+            <p>Fim It is useful for:</p>
+            <ul>
+                <li>Product sellers</li>
+                <li>Teachers and trainers</li>
+                <li>Designers and illustrators</li>
+                <li>Content creators and marketers</li>
+                <li>Real estate and interior designers</li>
+            </ul>
+            <p>Anyone who works with images can turn them into interactive stories using the .fim format.</p>
+        </section>
+
+        <section>
+            <h2>Privacy & Data</h2>
+            <p>Fim It focuses on interaction data, not identity. We collect only usage-based analytics like hotspot taps and link clicks. We do not collect personal details like names or payment information. Analytics are stored securely and designed to follow modern privacy standards.</p>
+        </section>
+
+        <section>
+            <h2>Mission</h2>
+            <p>Our mission is simple: make images smarter. Fim It gives you a way to guide attention, reveal depth, and understand engagement — all inside a single interactive image file.</p>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-about">Fim It introduces the .fim format — a new kind of image that responds, reveals, and reacts. Add hotspots, guide your viewers, and turn visuals into experiences.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms & Conditions</a>
+                </div>
+                <p class="copyright">&copy; <span id="year"></span> Fim It</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
