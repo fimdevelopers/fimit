@@ -1,136 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Delete Account – Fim It</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-    }
-    header, footer {
-      background: #020617;
-      border-bottom: 1px solid #1e293b;
-      padding: 16px 24px;
-    }
-    footer {
-      border-top: 1px solid #1e293b;
-      border-bottom: none;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 40px 24px;
-    }
-    h1 {
-      font-size: 28px;
-      margin-bottom: 12px;
-    }
-    h2 {
-      font-size: 20px;
-      margin-top: 28px;
-      margin-bottom: 8px;
-    }
-    p, li {
-      font-size: 15px;
-      line-height: 1.6;
-      color: #cbd5f5;
-    }
-    ul {
-      padding-left: 20px;
-    }
-    a {
-      color: #38bdf8;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .email {
-      font-weight: 600;
-      font-size: 16px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Account – Fim It</title>
+
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #2d3748;
+            --text-light: #718096;
+            --header-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-color: #460a74;
+            --section-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            background: var(--header-bg);
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 60px;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1100px;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        nav a {
+            margin-left: 30px;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        /* Content */
+        h1 {
+            color: var(--accent-color);
+            font-size: 2.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        h2 {
+            color: #1a202c;
+            font-size: 1.4rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #4a5568;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+
+        .email {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--section-bg);
+            padding: 60px 0;
+            margin-top: 80px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-about {
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            margin-bottom: 24px;
+        }
+
+        .footer-links a {
+            margin: 0 12px;
+            color: var(--text-light);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            nav a {
+                margin: 0 10px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
 <header>
-  <strong>Fim It</strong>
+    <div class="container">
+        <a href="index.html" class="logo">Fim It</a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="support.html">Support</a>
+        </nav>
+    </div>
 </header>
 
 <div class="container">
+    <h1>Delete Account</h1>
 
-  <h1>Delete Account – Fim It</h1>
+    <p>
+        Fim It respects your right to control your data.  
+        This page explains how you can request deletion of your account and associated data.
+    </p>
 
-  <p>
-    Fim It respects your right to control your data.  
-    This page explains how you can request deletion of your account and associated data.
-  </p>
+    <h2>What will be deleted</h2>
+    <p>Upon request, we will permanently delete:</p>
+    <ul>
+        <li>Analytics data associated with your usage (such as hotspot clicks, link clicks, and interaction counts)</li>
+        <li>Any internal identifiers linked to your app usage, if applicable</li>
+    </ul>
 
-  <h2>What will be deleted</h2>
-  <p>Upon request, we will permanently delete:</p>
-  <ul>
-    <li>Analytics data associated with your app usage (such as hotspot clicks, link clicks, and interaction counts)</li>
-    <li>Any internal identifiers linked to your usage, if applicable</li>
-  </ul>
-  <p>
-    Fim It does <strong>not</strong> collect personal information such as names, phone numbers,
-    passwords, or payment details.
-  </p>
+    <p>
+        Fim It does <strong>not</strong> collect personal information such as names, phone numbers,
+        passwords, or payment details.
+    </p>
 
-  <h2>How to request account deletion</h2>
-  <p>
-    To request deletion of your Fim It account and associated data, please send an email to:
-  </p>
+    <h2>How to request deletion</h2>
+    <p>
+        To request account and data deletion, please email:
+    </p>
 
-  <p class="email">
-    📧 <a href="mailto:fimdevelopers@gmail.com">fimdevelopers@gmail.com</a>
-  </p>
+    <p class="email">
+        <a href="mailto:fimdevelopers@gmail.com">fimdevelopers@gmail.com</a>
+    </p>
 
-  <p>
-    Please use the subject line:
-    <br><strong>“Delete My Fim It Account”</strong>
-  </p>
+    <p>
+        Use the subject line:  
+        <strong>“Delete My Fim It Account”</strong>
+    </p>
 
-  <p>
-    If applicable, include any information that helps us identify your data
-    (for example, the email address used within the app).
-  </p>
+    <h2>Processing time</h2>
+    <p>
+        Deletion requests are processed within <strong>7–14 business days</strong>.
+        Once deleted, data cannot be recovered.
+    </p>
 
-  <h2>Processing time</h2>
-  <p>
-    Account and data deletion requests are processed within
-    <strong>7–14 business days</strong>.
-    Once deleted, the data cannot be recovered.
-  </p>
+    <h2>Subscriptions</h2>
+    <p>
+        Deleting your account does not cancel subscriptions.
+        Subscriptions must be managed separately through the Apple App Store or Google Play Store.
+    </p>
 
-  <h2>Subscriptions</h2>
-  <p>
-    Deleting your account does <strong>not</strong> automatically cancel subscriptions.
-    Subscriptions must be cancelled separately through the Apple App Store or Google Play Store.
-  </p>
-
-  <h2>Need help?</h2>
-  <p>
-    If you have questions about account or data deletion, contact us at
-    <a href="mailto:fimdevelopers@gmail.com">fimdevelopers@gmail.com</a>.
-  </p>
-
+    <h2>Need help?</h2>
+    <p>
+        For any questions related to account or data deletion, contact us at
+        <a href="mailto:fimdevelopers@gmail.com">fimdevelopers@gmail.com</a>.
+    </p>
 </div>
 
 <footer>
-  <p>
-    Fim It introduces the .fim format — a new kind of image that responds, reveals, and reacts.
-    Add hotspots, guide your viewers, and turn visuals into experiences.
-  </p>
-  <p>
-    <a href="privacy.html">Privacy Policy</a> |
-    <a href="terms.html">Terms & Conditions</a>
-  </p>
+    <div class="container">
+        <div class="footer-content">
+            <p class="footer-about">
+                Fim It introduces the .fim format — a new kind of image that responds, reveals, and reacts.
+                Add hotspots, guide your viewers, and turn visuals into experiences.
+            </p>
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms & Conditions</a>
+                <a href="delete-account.html">Delete Account</a>
+            </div>
+            <p>&copy; <span id="year"></span> Fim It</p>
+        </div>
+    </div>
 </footer>
+
+<script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+</script>
 
 </body>
 </html>
