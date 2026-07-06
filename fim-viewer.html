@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fim It - FIM Viewer</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #2d3748;
+            --text-light: #718096;
+            --header-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-color: #460a74;
+            --accent-white: #ffffff;
+            --section-bg: #f8f9fa;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            background: var(--header-bg);
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        nav a {
+            margin-left: 30px;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        footer {
+            background: var(--section-bg);
+            /* padding: 40px 0;
+            margin-top: 60px; */
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            margin: 0 12px;
+            color: var(--text-light);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        h1, h2, h3 {
+            color: #1a202c;
+            margin-top: 0;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.75rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        /* main {
+            padding: 40px 0 20px;
+        } */
+
+        main {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main > .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .viewer-header {
+            margin-bottom: 24px;
+        }
+
+        .status {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        .status.error {
+            color: #e53e3e;
+        }
+
+        .viewer-wrapper {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+            flex: 1 1 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fim-viewer-container {
+            position: relative;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            background: #edf2f7;
+            border-radius: 12px;
+            overflow: hidden;
+            max-height: 100%;
+        }
+
+        #fim-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        #hotspot-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+
+        .fim-hotspot {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            border: 3px solid #ffffff;
+            background: rgba(70, 10, 116, 0.9);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+
+        .fim-hotspot::before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: #ffffff;
+        }
+
+        .fim-hotspot:hover,
+        .fim-hotspot:focus-visible {
+            outline: none;
+            transform: scale(1.08);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+        }
+
+        .fim-hotspot:focus-visible {
+            box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(70, 10, 116, 0.8);
+        }
+
+        .fim-hotspot[data-type*="location"]::before {
+            width: 8px;
+            height: 8px;
+        }
+
+        .fim-hotspot[data-type*="square"] {
+            border-radius: 8px;
+        }
+
+        .fim-hotspot[data-type*="cart"]::before,
+        .fim-hotspot[data-type*="bag"]::before {
+            width: 6px;
+            height: 6px;
+        }
+
+        .fim-hotspot[data-type*="link"]::before {
+            width: 4px;
+            height: 4px;
+        }
+
+        .fim-hotspot[data-type*="location"]::after {
+            content: "";
+            position: absolute;
+            width: 6px;
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.12);
+            top: 70%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .fim-hotspot[data-type*="cart"]::after {
+            content: "";
+            position: absolute;
+            width: 14px;
+            height: 2px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.18);
+            bottom: 18%;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: -5px 2px 0 0 rgba(0, 0, 0, 0.18), 5px 2px 0 0 rgba(0, 0, 0, 0.18);
+        }
+
+        .fim-hotspot[data-type*="bag"]::after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 6px;
+            border-radius: 3px;
+            border: 2px solid rgba(0, 0, 0, 0.18);
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: transparent;
+        }
+
+        .fim-hotspot[data-type*="link"]::before {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: transparent;
+            border: 2px solid #ffffff;
+        }
+
+        @keyframes hotspot-pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.8);
+            }
+            60% {
+                transform: scale(1.12);
+                box-shadow: 0 0 0 14px rgba(255, 255, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        @keyframes hotspot-swirl {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes hotspot-bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        .fim-hotspot.anim-pulse {
+            animation: hotspot-pulse 1.8s ease-out infinite;
+        }
+
+        .fim-hotspot.anim-swirl {
+            animation: hotspot-swirl 1.6s linear infinite;
+        }
+
+        .fim-hotspot.anim-bounce {
+            animation: hotspot-bounce 1.4s ease-in-out infinite;
+        }
+
+        .fim-hotspot.fim-hotspot--has-svg::before,
+        .fim-hotspot.fim-hotspot--has-svg::after {
+            display: none;
+        }
+
+        .fim-hotspot.fim-hotspot--has-svg {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        .fim-hotspot.fim-hotspot--has-svg:hover,
+        .fim-hotspot.fim-hotspot--has-svg:focus-visible {
+            box-shadow: none;
+        }
+
+        .fim-hotspot.fim-hotspot--has-svg:focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        .fim-hotspot.fim-hotspot--has-svg svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .help-text {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 10px;
+        }
+
+        .help-text code {
+            background: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .hotspot-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+
+        .hotspot-overlay.hidden {
+            display: none;
+        }
+
+        .hotspot-popup {
+            background: #ffffff;
+            border-radius: 14px;
+            max-width: 420px;
+            width: calc(100% - 32px);
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.45);
+            padding: 18px 20px 16px;
+            position: relative;
+        }
+
+        .popup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .popup-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .popup-close {
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
+            padding: 4px;
+        }
+
+        .popup-close:hover {
+            color: var(--text-color);
+        }
+
+        .popup-body {
+            font-size: 0.95rem;
+            color: var(--text-color);
+        }
+
+        #popup-label {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            nav a {
+                margin: 0 10px;
+            }
+
+            /* main {
+                padding-top: 24px;
+            } */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">Fim It</a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="support.html">Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div id="status" class="status">Initializing viewer…</div>
+
+            <div class="viewer-wrapper">
+                <div id="fim-viewer-container" class="fim-viewer-container">
+                    <img id="fim-image" alt="FIM image" />
+                    <div id="hotspot-layer" aria-hidden="true"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <!-- <div class="footer-links">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms &amp; Conditions</a>
+                    <a href="delete-account.html">Delete Account</a>
+                </div> -->
+                <p>&copy; <span id="year"></span> Fim It</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="hotspot-overlay" class="hotspot-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+        <div class="hotspot-popup">
+            <div class="popup-header">
+                <div id="popup-title" class="popup-title">Hotspot Info</div>
+                <button type="button" id="popup-close" class="popup-close" aria-label="Close">&times;</button>
+            </div>
+            <div class="popup-body">
+                <div id="popup-label"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc
+        } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFTN2oDwXNO-io2kdkR_5aHcDs8GB4RZA",
+            authDomain: "fim-gallery.firebaseapp.com",
+            projectId: "fim-gallery",
+            storageBucket: "fim-gallery.firebasestorage.app",
+            messagingSenderId: "256460542708",
+            appId: "1:256460542708:web:550f7a90f229114de844a1",
+            measurementId: "G-4ELC5SDVTT"
+        };
+
+        const PUBLISHED_INFO_COLLECTION = "published_info";
+
+        const statusEl = document.getElementById("status");
+        const imageEl = document.getElementById("fim-image");
+        const hotspotLayerEl = document.getElementById("hotspot-layer");
+        const overlayEl = document.getElementById("hotspot-overlay");
+        const popupLabelEl = document.getElementById("popup-label");
+        const popupCloseEl = document.getElementById("popup-close");
+
+        function setStatus(message, isError = false) {
+            if (!statusEl) return;
+            statusEl.textContent = message;
+            statusEl.classList.toggle("error", !!isError);
+        }
+
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        function normalizeMarkdownUrls(text) {
+            return String(text || "").replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, (_, __, url) => url);
+        }
+
+        function escapeHtml(text) {
+            return String(text || "").replace(/[&<>"']/g, (char) => {
+                switch (char) {
+                    case "&":
+                        return "&amp;";
+                    case "<":
+                        return "&lt;";
+                    case ">":
+                        return "&gt;";
+                    case '"':
+                        return "&quot;";
+                    case "'":
+                        return "&#39;";
+                    default:
+                        return char;
+                }
+            });
+        }
+
+        function linkifyText(text) {
+            const urlPattern = /(https?:\/\/[^\s<]+|www\.[^\s<]+)/gi;
+            const escaped = escapeHtml(text);
+            return escaped.replace(urlPattern, (match) => {
+                const href = /^https?:\/\//i.test(match) ? match : "https://" + match;
+                return `<a href="${href}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+            });
+        }
+
+        function parseColorFromHexWithAlpha(hex) {
+            if (!hex || typeof hex !== "string") return null;
+            const raw = hex.replace("#", "").trim();
+            if (raw.length === 8) {
+                return "#" + raw.slice(2);
+            }
+            if (raw.length === 6) {
+                return "#" + raw;
+            }
+            return null;
+        }
+
+        function clearHotspots() {
+            while (hotspotLayerEl.firstChild) {
+                hotspotLayerEl.removeChild(hotspotLayerEl.firstChild);
+            }
+        }
+
+        function getHotspotTypeKey(type) {
+            if (!type) return "circle";
+            const s = String(type).toLowerCase();
+            if (s.includes("square")) return "square";
+            if (s.includes("location")) return "location";
+            if (s.includes("cart")) return "cart";
+            if (s.includes("bag")) return "bag";
+            if (s.includes("link")) return "link";
+            return "circle";
+        }
+
+        function getHotspotSvgMarkup(typeKey) {
+            const c = "currentColor";
+            switch (typeKey) {
+                case "square":
+                    return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3" fill="none" stroke="' + c + '" stroke-width="2.2"/></svg>';
+                case "location":
+                    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-2.8 0-5 2.2-5 5 0 3.6 3.5 7.3 4.5 8.4.3.3.7.3 1 0C13.5 15.3 17 11.6 17 8c0-2.8-2.2-5-5-5z" fill="' + c + '"/><circle cx="12" cy="8" r="2.4" fill="white" opacity="0.9"/></svg>';
+                case "cart":
+                    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h2l1.2 8h9.2l1.4-6H8.2" fill="none" stroke="' + c + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="18" r="1.5" fill="' + c + '"/><circle cx="16" cy="18" r="1.5" fill="' + c + '"/></svg>';
+                case "bag":
+                    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9h10l-.8 8H7.8L7 9z" fill="' + c + '"/><path d="M9.5 9V8a2.5 2.5 0 0 1 5 0v1" fill="none" stroke="' + c + '" stroke-width="1.6" stroke-linecap="round"/></svg>';
+                case "link":
+                    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 14.5l-1.2 1.2a3 3 0 0 1-4.2-4.2l3-3a3 3 0 0 1 4.2 0" fill="none" stroke="' + c + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 9.5l1.2-1.2a3 3 0 0 1 4.2 4.2l-3 3a3 3 0 0 1-4.2 0" fill="none" stroke="' + c + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                case "circle":
+                default:
+                    return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7" fill="none" stroke="' + c + '" stroke-width="2.2"/></svg>';
+            }
+        }
+
+        function createHotspotElement(hotspot) {
+            const el = document.createElement("button");
+            el.type = "button";
+            el.className = "fim-hotspot";
+            el.tabIndex = 0;
+
+            const x = typeof hotspot.x === "number" ? hotspot.x : parseFloat(hotspot.x);
+            const y = typeof hotspot.y === "number" ? hotspot.y : parseFloat(hotspot.y);
+            const safeX = isFinite(x) ? Math.min(Math.max(x, 0), 1) : 0.5;
+            const safeY = isFinite(y) ? Math.min(Math.max(y, 0), 1) : 0.5;
+
+            el.style.left = (safeX * 100) + "%";
+            el.style.top = (safeY * 100) + "%";
+
+            const color = parseColorFromHexWithAlpha(hotspot.color);
+            el.style.color = color || "#460a74";
+
+            const typeValue = hotspot.type || "";
+            const typeKey = getHotspotTypeKey(typeValue);
+            if (typeValue) {
+                el.dataset.type = String(typeValue);
+            }
+            el.classList.add("fim-hotspot--has-svg");
+            el.innerHTML = getHotspotSvgMarkup(typeKey);
+
+            const animationType = hotspot.animationType || hotspot.animation_type || "";
+            if (animationType === "HotspotAnimationType.pulse") {
+                el.classList.add("anim-pulse");
+            } else if (animationType === "HotspotAnimationType.swirl") {
+                el.classList.add("anim-swirl");
+            } else if (animationType === "HotspotAnimationType.bounce") {
+                el.classList.add("anim-bounce");
+            }
+
+            const label = hotspot.label || "";
+            const url = hotspot.url || "";
+
+            el.addEventListener("click", (event) => {
+                event.stopPropagation();
+                showHotspotPopup({
+                    label: label || url || ""
+                });
+            });
+
+            el.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    el.click();
+                }
+            });
+
+            return el;
+        }
+
+        function showHotspotPopup(details) {
+            const text = normalizeMarkdownUrls(details.label || "");
+            popupLabelEl.innerHTML = linkifyText(text || "Hotspot");
+            overlayEl.classList.remove("hidden");
+        }
+
+        function hideHotspotPopup() {
+            overlayEl.classList.add("hidden");
+        }
+
+        overlayEl.addEventListener("click", (event) => {
+            if (event.target === overlayEl) {
+                hideHotspotPopup();
+            }
+        });
+
+        popupCloseEl.addEventListener("click", () => {
+            hideHotspotPopup();
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && !overlayEl.classList.contains("hidden")) {
+                hideHotspotPopup();
+            }
+        });
+
+        async function initFirebase() {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            return { app, db };
+        }
+
+        async function fetchFimDocument(db, imageId) {
+            const directRef = doc(db, PUBLISHED_INFO_COLLECTION, imageId);
+            const directSnap = await getDoc(directRef);
+            if (directSnap.exists()) {
+                return { id: directSnap.id, ...directSnap.data() };
+            }
+
+            throw new Error("No published FIM data found for image id: " + imageId);
+        }
+
+        function parseHotspots(rawHotspots) {
+            if (!rawHotspots) return [];
+            if (Array.isArray(rawHotspots)) {
+                return rawHotspots;
+            }
+            if (typeof rawHotspots === "string") {
+                try {
+                    const parsed = JSON.parse(rawHotspots);
+                    if (Array.isArray(parsed)) return parsed;
+                } catch {
+                    throw new Error("Hotspot data is not valid JSON.");
+                }
+            }
+            throw new Error("Hotspot data is not a valid list.");
+        }
+
+        function extractImageUrl(docData) {
+            if (!docData) return null;
+            const candidates = [
+                "public_image_url",
+                "image_url",
+                "imageUrl",
+                "file_url",
+                "fileUrl",
+                "url"
+            ];
+            for (const key of candidates) {
+                if (typeof docData[key] === "string" && docData[key].trim()) {
+                    return docData[key];
+                }
+            }
+            return null;
+        }
+
+        function updateViewerHeight() {
+            const header = document.querySelector("header");
+            const footer = document.querySelector("footer");
+            const viewerContainer = document.getElementById("fim-viewer-container");
+            if (!viewerContainer) return;
+
+            const viewportH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+            const headerH = header ? header.offsetHeight : 0;
+            const footerH = footer ? footer.offsetHeight : 0;
+            const buffer = 40;
+            const availableH = Math.max(200, viewportH - headerH - footerH - buffer);
+
+            viewerContainer.style.maxHeight = availableH + "px";
+            if (imageEl) {
+                imageEl.style.maxHeight = availableH + "px";
+            }
+            positionHotspotLayer();
+        }
+
+        function positionHotspotLayer() {
+            if (!imageEl || !hotspotLayerEl || !imageEl.offsetWidth || !imageEl.offsetHeight) return;
+
+            hotspotLayerEl.style.left = imageEl.offsetLeft + "px";
+            hotspotLayerEl.style.top = imageEl.offsetTop + "px";
+            hotspotLayerEl.style.width = imageEl.offsetWidth + "px";
+            hotspotLayerEl.style.height = imageEl.offsetHeight + "px";
+            hotspotLayerEl.style.right = "auto";
+            hotspotLayerEl.style.bottom = "auto";
+        }
+
+        async function main() {
+            try {
+                const imageId = getQueryParam("id");
+                if (!imageId) {
+                    setStatus("Missing required query parameter: id", true);
+                    return;
+                }
+
+                updateViewerHeight();
+
+                setStatus("Connecting to FIM gallery…");
+                const { db } = await initFirebase();
+
+                setStatus("Loading FIM data…");
+                const docData = await fetchFimDocument(db, imageId);
+                if (docData.is_published !== true) {
+                    setStatus("This FIM file is not published or is no longer available.", true);
+                    return;
+                }
+
+                const imageUrl = extractImageUrl(docData);
+                if (!imageUrl) {
+                    setStatus("FIM document loaded but no public image URL was found.", true);
+                    return;
+                }
+
+                const hotspots = parseHotspots(docData.hotspots);
+
+                imageEl.src = imageUrl;
+                
+                imageEl.onload = () => {
+                    clearHotspots();
+                    hotspots.forEach((h) => {
+                        const el = createHotspotElement(h);
+                        hotspotLayerEl.appendChild(el);
+                    });
+                    updateViewerHeight();
+                    positionHotspotLayer();
+
+                    setStatus(
+                        hotspots.length
+                            ? `Loaded image with ${hotspots.length} hotspot${hotspots.length === 1 ? "" : "s"}.`
+                            : "Image loaded with no hotspots."
+                    );
+                };
+
+                imageEl.onerror = () => {
+                    setStatus("Failed to load the image from the provided URL.", true);
+                };
+            } catch (error) {
+                console.error(error);
+                setStatus("Unable to load FIM data. " + (error && error.message ? error.message : ""), true);
+            }
+        }
+
+        window.addEventListener("resize", () => {
+            updateViewerHeight();
+            positionHotspotLayer();
+        });
+
+        main();
+    </script>
+</body>
+</html>
+
