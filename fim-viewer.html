@@ -161,7 +161,7 @@
             background: #ffffff;
             border-radius: 16px;
             box-shadow: var(--card-shadow);
-            padding: 20px;
+            padding: 10px;
             flex: 1 1 auto;
             display: flex;
             align-items: center;
@@ -170,66 +170,159 @@
 
         .fim-viewer-container {
             position: relative;
-            max-width: 900px;
-            width: 100%;
+            width: 320px;
+            height: 568px;
             margin: 0 auto;
             background: #edf2f7;
             border-radius: 12px;
-            overflow: hidden;
-            max-height: 100%;
+            overflow: visible;
+            flex: 0 0 auto;
         }
 
         #fim-image {
-            max-width: 100%;
-            height: auto;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
             display: block;
-            margin: 0 auto;
         }
 
         #hotspot-layer {
             position: absolute;
             top: 0;
             left: 0;
-            width: 0;
-            height: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
         }
 
         .fim-hotspot {
             position: absolute;
-            width: 28px;
-            height: 28px;
-            border-radius: 999px;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
             border: 3px solid #ffffff;
-            background: rgba(70, 10, 116, 0.9);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+            border-radius: 50%;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+            z-index: 10;
             pointer-events: auto;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-        }
-
-        .fim-hotspot::before {
-            content: "";
-            width: 10px;
-            height: 10px;
-            border-radius: 999px;
-            background: #ffffff;
+            transition: transform 0.2s;
         }
 
         .fim-hotspot:hover,
         .fim-hotspot:focus-visible {
             outline: none;
-            transform: scale(1.08);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+            transform: scale(1.2);
+            background: var(--accent-color);
+            border-color: #ffffff;
         }
 
         .fim-hotspot:focus-visible {
             box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(70, 10, 116, 0.8);
         }
 
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        .fim-product-label {
+            position: absolute;
+            background: #ffffff;
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+            z-index: 20;
+            transform: translate(-50%, -140%) scale(0.9);
+            transform-origin: center bottom;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 1px solid var(--border-color);
+        }
+
+        .fim-product-label.visible {
+            opacity: 1;
+            transform: translate(-50%, -140%) scale(1);
+            pointer-events: auto;
+        }
+
+        .fim-product-label--below {
+            transform: translate(-50%, 40%) scale(0.9);
+            transform-origin: center top;
+        }
+
+        .fim-product-label--below.visible {
+            transform: translate(-50%, 40%) scale(1);
+        }
+
+        .fim-product-label::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: #ffffff transparent transparent transparent;
+        }
+
+        .fim-product-label--below::after {
+            top: -6px;
+            bottom: auto;
+            border-width: 0 6px 6px;
+            border-color: transparent transparent #ffffff transparent;
+        }
+
+        .fim-product-label a {
+            display: inline-block;
+            max-width: min(300px, 70vw);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: bottom;
+            white-space: nowrap;
+        }
+
+        .fim-product-label--url {
+            white-space: normal;
+            max-width: min(340px, 80vw);
+        }
+
+        .fim-url-preview {
+            display: none;
+            width: min(300px, 70vw);
+            height: 170px;
+            margin-top: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        .fim-product-label.visible .fim-url-preview {
+            display: block;
+        }
+
+        .fim-url-preview iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /*
+         * FUTURE: Metadata-specific hotspot rendering.
+         *
+         * The viewer currently forces the landing-page demo hotspot style for all
+         * hotspots, regardless of saved type, color, or animation metadata. Keep
+         * this legacy CSS commented so the SVG/type/icon renderer can be restored.
+         *
         .fim-hotspot[data-type*="location"]::before {
             width: 8px;
             height: 8px;
@@ -367,6 +460,7 @@
             height: 100%;
             display: block;
         }
+        */
 
         .help-text {
             font-size: 0.9rem;
@@ -379,67 +473,6 @@
             padding: 2px 6px;
             border-radius: 4px;
             font-size: 0.85rem;
-        }
-
-        .hotspot-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-        }
-
-        .hotspot-overlay.hidden {
-            display: none;
-        }
-
-        .hotspot-popup {
-            background: #ffffff;
-            border-radius: 14px;
-            max-width: 420px;
-            width: calc(100% - 32px);
-            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.45);
-            padding: 18px 20px 16px;
-            position: relative;
-        }
-
-        .popup-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .popup-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--accent-color);
-        }
-
-        .popup-close {
-            border: none;
-            background: transparent;
-            color: var(--text-light);
-            cursor: pointer;
-            font-size: 1.2rem;
-            line-height: 1;
-            padding: 4px;
-        }
-
-        .popup-close:hover {
-            color: var(--text-color);
-        }
-
-        .popup-body {
-            font-size: 0.95rem;
-            color: var(--text-color);
-        }
-
-        #popup-label {
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
         }
 
         @media (max-width: 768px) {
@@ -477,7 +510,7 @@
             <div class="viewer-wrapper">
                 <div id="fim-viewer-container" class="fim-viewer-container">
                     <img id="fim-image" alt="FIM image" />
-                    <div id="hotspot-layer" aria-hidden="true"></div>
+                    <div id="hotspot-layer"></div>
                 </div>
             </div>
         </div>
@@ -495,18 +528,6 @@
             </div>
         </div>
     </footer>
-
-    <div id="hotspot-overlay" class="hotspot-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="popup-title">
-        <div class="hotspot-popup">
-            <div class="popup-header">
-                <div id="popup-title" class="popup-title">Hotspot Info</div>
-                <button type="button" id="popup-close" class="popup-close" aria-label="Close">&times;</button>
-            </div>
-            <div class="popup-body">
-                <div id="popup-label"></div>
-            </div>
-        </div>
-    </div>
 
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
@@ -535,9 +556,6 @@
         const statusEl = document.getElementById("status");
         const imageEl = document.getElementById("fim-image");
         const hotspotLayerEl = document.getElementById("hotspot-layer");
-        const overlayEl = document.getElementById("hotspot-overlay");
-        const popupLabelEl = document.getElementById("popup-label");
-        const popupCloseEl = document.getElementById("popup-close");
 
         function setStatus(message, isError = false) {
             if (!statusEl) return;
@@ -582,6 +600,95 @@
             });
         }
 
+        function normalizeWholeUrl(text) {
+            const trimmed = String(text || "").trim();
+            if (!/^(https?:\/\/|www\.)\S+$/i.test(trimmed)) return null;
+
+            try {
+                const url = new URL(/^https?:\/\//i.test(trimmed) ? trimmed : "https://" + trimmed);
+                return url.toString();
+            } catch {
+                return null;
+            }
+        }
+
+        function closeAllProductLabels(exceptLabel = null) {
+            document.querySelectorAll(".fim-product-label.visible").forEach((label) => {
+                if (label !== exceptLabel) {
+                    label.classList.remove("visible");
+                }
+            });
+        }
+
+        function renderProductLabelContent(labelEl, rawText) {
+            const text = normalizeMarkdownUrls(rawText || "Hotspot");
+            const normalizedUrl = normalizeWholeUrl(text);
+
+            if (!normalizedUrl) {
+                labelEl.innerHTML = linkifyText(text || "Hotspot");
+                return;
+            }
+
+            labelEl.classList.add("fim-product-label--url");
+            labelEl.innerHTML =
+                `<a href="${escapeHtml(normalizedUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(text)}</a>` +
+                `<div class="fim-url-preview" aria-label="URL preview"><iframe src="${escapeHtml(normalizedUrl)}" loading="lazy" sandbox="allow-same-origin allow-scripts allow-forms"></iframe></div>`;
+        }
+
+        function parseFiniteNumber(value) {
+            const number = typeof value === "number" ? value : parseFloat(value);
+            return Number.isFinite(number) ? number : null;
+        }
+
+        function clampUnit(value) {
+            return Math.min(Math.max(value, 0), 1);
+        }
+
+        function getHotspotPosition(hotspot) {
+            const x = parseFiniteNumber(hotspot.x);
+            const y = parseFiniteNumber(hotspot.y);
+            const iw = parseFiniteNumber(hotspot.iw);
+            const ih = parseFiniteNumber(hotspot.ih);
+
+            if (x === null || y === null) {
+                return { left: "50%", top: "50%" };
+            }
+
+            if (iw !== null && ih !== null && iw > 0 && ih > 0) {
+                const sourceX = x >= 0 && x <= 1 ? x * iw : x;
+                const sourceY = y >= 0 && y <= 1 ? y * ih : y;
+                return {
+                    left: (clampUnit(sourceX / iw) * 100) + "%",
+                    top: (clampUnit(sourceY / ih) * 100) + "%"
+                };
+            }
+
+            if (x >= 0 && x <= 1 && y >= 0 && y <= 1) {
+                return {
+                    left: (clampUnit(x) * 100) + "%",
+                    top: (clampUnit(y) * 100) + "%"
+                };
+            }
+
+            return {
+                left: Math.max(x, 0) + "px",
+                top: Math.max(y, 0) + "px"
+            };
+        }
+
+        function getPositionUnit(positionValue) {
+            if (typeof positionValue !== "string" || !positionValue.endsWith("%")) return null;
+            const value = parseFloat(positionValue);
+            return Number.isFinite(value) ? value / 100 : null;
+        }
+
+        /*
+         * FUTURE: Metadata-specific hotspot rendering.
+         *
+         * The viewer currently forces the landing-page demo hotspot style for all
+         * hotspots, regardless of saved type, color, or animation metadata. Keep
+         * this legacy JS commented so the SVG/type/icon renderer can be restored.
+         *
         function parseColorFromHexWithAlpha(hex) {
             if (!hex || typeof hex !== "string") return null;
             const raw = hex.replace("#", "").trim();
@@ -593,6 +700,7 @@
             }
             return null;
         }
+        */
 
         function clearHotspots() {
             while (hotspotLayerEl.firstChild) {
@@ -600,6 +708,13 @@
             }
         }
 
+        /*
+         * FUTURE: Metadata-specific hotspot rendering.
+         *
+         * The viewer currently forces the landing-page demo hotspot style for all
+         * hotspots, regardless of saved type, color, or animation metadata. Keep
+         * this legacy JS commented so the SVG/type/icon renderer can be restored.
+         *
         function getHotspotTypeKey(type) {
             if (!type) return "circle";
             const s = String(type).toLowerCase();
@@ -629,21 +744,39 @@
                     return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7" fill="none" stroke="' + c + '" stroke-width="2.2"/></svg>';
             }
         }
+        */
 
-        function createHotspotElement(hotspot) {
+        function createHotspotElements(hotspot) {
             const el = document.createElement("button");
             el.type = "button";
             el.className = "fim-hotspot";
             el.tabIndex = 0;
 
-            const x = typeof hotspot.x === "number" ? hotspot.x : parseFloat(hotspot.x);
-            const y = typeof hotspot.y === "number" ? hotspot.y : parseFloat(hotspot.y);
-            const safeX = isFinite(x) ? Math.min(Math.max(x, 0), 1) : 0.5;
-            const safeY = isFinite(y) ? Math.min(Math.max(y, 0), 1) : 0.5;
+            const position = getHotspotPosition(hotspot);
 
-            el.style.left = (safeX * 100) + "%";
-            el.style.top = (safeY * 100) + "%";
+            el.style.left = position.left;
+            el.style.top = position.top;
 
+            const label = hotspot.label || "";
+            const url = hotspot.url || "";
+            const labelEl = document.createElement("div");
+            labelEl.className = "fim-product-label";
+            labelEl.style.left = position.left;
+            labelEl.style.top = position.top;
+            renderProductLabelContent(labelEl, label || url || "Hotspot");
+
+            const yUnit = getPositionUnit(position.top);
+            if (labelEl.classList.contains("fim-product-label--url") && yUnit !== null && yUnit < 0.45) {
+                labelEl.classList.add("fim-product-label--below");
+            }
+
+            /*
+             * FUTURE: Metadata-specific hotspot rendering.
+             *
+             * The viewer currently forces the landing-page demo hotspot style for
+             * all hotspots, regardless of saved type, color, or animation metadata.
+             * Keep this legacy wiring commented so it can be revived later.
+             *
             const color = parseColorFromHexWithAlpha(hotspot.color);
             el.style.color = color || "#460a74";
 
@@ -663,15 +796,17 @@
             } else if (animationType === "HotspotAnimationType.bounce") {
                 el.classList.add("anim-bounce");
             }
-
-            const label = hotspot.label || "";
-            const url = hotspot.url || "";
+            */
 
             el.addEventListener("click", (event) => {
                 event.stopPropagation();
-                showHotspotPopup({
-                    label: label || url || ""
-                });
+                const shouldShow = !labelEl.classList.contains("visible");
+                closeAllProductLabels(labelEl);
+                labelEl.classList.toggle("visible", shouldShow);
+            });
+
+            labelEl.addEventListener("click", (event) => {
+                event.stopPropagation();
             });
 
             el.addEventListener("keydown", (event) => {
@@ -681,32 +816,16 @@
                 }
             });
 
-            return el;
+            return [el, labelEl];
         }
 
-        function showHotspotPopup(details) {
-            const text = normalizeMarkdownUrls(details.label || "");
-            popupLabelEl.innerHTML = linkifyText(text || "Hotspot");
-            overlayEl.classList.remove("hidden");
-        }
-
-        function hideHotspotPopup() {
-            overlayEl.classList.add("hidden");
-        }
-
-        overlayEl.addEventListener("click", (event) => {
-            if (event.target === overlayEl) {
-                hideHotspotPopup();
-            }
-        });
-
-        popupCloseEl.addEventListener("click", () => {
-            hideHotspotPopup();
+        document.addEventListener("click", () => {
+            closeAllProductLabels();
         });
 
         document.addEventListener("keydown", (event) => {
-            if (event.key === "Escape" && !overlayEl.classList.contains("hidden")) {
-                hideHotspotPopup();
+            if (event.key === "Escape") {
+                closeAllProductLabels();
             }
         });
 
@@ -761,31 +880,17 @@
         }
 
         function updateViewerHeight() {
-            const header = document.querySelector("header");
-            const footer = document.querySelector("footer");
-            const viewerContainer = document.getElementById("fim-viewer-container");
-            if (!viewerContainer) return;
-
-            const viewportH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-            const headerH = header ? header.offsetHeight : 0;
-            const footerH = footer ? footer.offsetHeight : 0;
-            const buffer = 40;
-            const availableH = Math.max(200, viewportH - headerH - footerH - buffer);
-
-            viewerContainer.style.maxHeight = availableH + "px";
-            if (imageEl) {
-                imageEl.style.maxHeight = availableH + "px";
-            }
             positionHotspotLayer();
         }
 
         function positionHotspotLayer() {
-            if (!imageEl || !hotspotLayerEl || !imageEl.offsetWidth || !imageEl.offsetHeight) return;
+            const viewerContainer = document.getElementById("fim-viewer-container");
+            if (!viewerContainer || !hotspotLayerEl) return;
 
-            hotspotLayerEl.style.left = imageEl.offsetLeft + "px";
-            hotspotLayerEl.style.top = imageEl.offsetTop + "px";
-            hotspotLayerEl.style.width = imageEl.offsetWidth + "px";
-            hotspotLayerEl.style.height = imageEl.offsetHeight + "px";
+            hotspotLayerEl.style.left = "0";
+            hotspotLayerEl.style.top = "0";
+            hotspotLayerEl.style.width = viewerContainer.clientWidth + "px";
+            hotspotLayerEl.style.height = viewerContainer.clientHeight + "px";
             hotspotLayerEl.style.right = "auto";
             hotspotLayerEl.style.bottom = "auto";
         }
@@ -823,17 +928,18 @@
                 imageEl.onload = () => {
                     clearHotspots();
                     hotspots.forEach((h) => {
-                        const el = createHotspotElement(h);
-                        hotspotLayerEl.appendChild(el);
+                        const elements = createHotspotElements(h);
+                        elements.forEach((el) => hotspotLayerEl.appendChild(el));
                     });
                     updateViewerHeight();
                     positionHotspotLayer();
+                    setStatus('')
 
-                    setStatus(
-                        hotspots.length
-                            ? `Loaded image with ${hotspots.length} hotspot${hotspots.length === 1 ? "" : "s"}.`
-                            : "Image loaded with no hotspots."
-                    );
+                    // setStatus(
+                    //     hotspots.length
+                    //         ? `Loaded image with ${hotspots.length} hotspot${hotspots.length === 1 ? "" : "s"}.`
+                    //         : "Image loaded with no hotspots."
+                    // );
                 };
 
                 imageEl.onerror = () => {
