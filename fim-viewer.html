@@ -166,6 +166,58 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        body.viewer-fullscreen-fallback-active {
+            overflow: hidden;
+        }
+
+        .viewer-wrapper:fullscreen,
+        .viewer-wrapper.viewer-wrapper--fullscreen-fallback {
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+            border-radius: 0;
+            background: #0f172a;
+            box-shadow: none;
+        }
+
+        .viewer-wrapper.viewer-wrapper--fullscreen-fallback {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+        }
+
+        .viewer-wrapper:fullscreen .fim-viewer-container,
+        .viewer-wrapper.viewer-wrapper--fullscreen-fallback .fim-viewer-container {
+            width: min(100vw, 56.338vh);
+            height: min(100vh, 176.875vw);
+            border-radius: 0;
+        }
+
+        .fullscreen-hint {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            z-index: 1000;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.78);
+            color: #ffffff;
+            font-size: 0.78rem;
+            font-weight: 600;
+            line-height: 1.2;
+            pointer-events: none;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .fullscreen-hint.fullscreen-hint--left {
+            right: auto;
+            left: 16px;
         }
 
         .fim-viewer-container {
@@ -507,10 +559,13 @@
         <div class="container">
             <div id="status" class="status">Initializing viewer…</div>
 
-            <div class="viewer-wrapper">
+            <div id="viewer-wrapper" class="viewer-wrapper">
                 <div id="fim-viewer-container" class="fim-viewer-container">
                     <img id="fim-image" alt="FIM image" />
                     <div id="hotspot-layer"></div>
+                </div>
+                <div id="fullscreen-hint" class="fullscreen-hint" aria-hidden="true">
+                    Double click for full screen
                 </div>
             </div>
         </div>
@@ -556,11 +611,109 @@
         const statusEl = document.getElementById("status");
         const imageEl = document.getElementById("fim-image");
         const hotspotLayerEl = document.getElementById("hotspot-layer");
+        const viewerWrapperEl = document.getElementById("viewer-wrapper");
+        const fullscreenHintEl = document.getElementById("fullscreen-hint");
+        let lastTouchTap = null;
+        let suppressDblClickUntil = 0;
 
         function setStatus(message, isError = false) {
             if (!statusEl) return;
             statusEl.textContent = message;
             statusEl.classList.toggle("error", !!isError);
+        }
+
+        function rectanglesOverlap(first, second, padding = 8) {
+            return !(
+                first.right + padding < second.left ||
+                first.left - padding > second.right ||
+                first.bottom + padding < second.top ||
+                first.top - padding > second.bottom
+            );
+        }
+
+        function updateFullscreenHintPosition() {
+            if (!fullscreenHintEl) return;
+
+            fullscreenHintEl.classList.remove("fullscreen-hint--left");
+            window.requestAnimationFrame(() => {
+                const hintRect = fullscreenHintEl.getBoundingClientRect();
+                const overlapsHotspot = Array.from(
+                    hotspotLayerEl.querySelectorAll(".fim-hotspot")
+                ).some((hotspot) => rectanglesOverlap(
+                    hotspot.getBoundingClientRect(),
+                    hintRect
+                ));
+
+                fullscreenHintEl.classList.toggle(
+                    "fullscreen-hint--left",
+                    overlapsHotspot
+                );
+            });
+        }
+
+        function isViewerFullscreen() {
+            return document.fullscreenElement === viewerWrapperEl ||
+                viewerWrapperEl.classList.contains("viewer-wrapper--fullscreen-fallback");
+        }
+
+        function setFallbackFullscreen(enabled) {
+            viewerWrapperEl.classList.toggle(
+                "viewer-wrapper--fullscreen-fallback",
+                enabled
+            );
+            document.body.classList.toggle(
+                "viewer-fullscreen-fallback-active",
+                enabled
+            );
+            syncFullscreenUi();
+        }
+
+        function syncFullscreenUi() {
+            const isFullscreen = isViewerFullscreen();
+            const touchInstruction = window.matchMedia("(pointer: coarse)").matches;
+            const action = touchInstruction ? "Double tap" : "Double click";
+
+            fullscreenHintEl.textContent = isFullscreen
+                ? `${action} or press Esc to exit full screen`
+                : `${action} for full screen`;
+            closeAllProductLabels();
+            window.requestAnimationFrame(() => {
+                positionHotspotLayer();
+                updateFullscreenHintPosition();
+            });
+        }
+
+        async function toggleViewerFullscreen() {
+            if (!viewerWrapperEl) return;
+
+            try {
+                if (document.fullscreenElement === viewerWrapperEl) {
+                    await document.exitFullscreen();
+                    return;
+                }
+
+                if (viewerWrapperEl.classList.contains("viewer-wrapper--fullscreen-fallback")) {
+                    setFallbackFullscreen(false);
+                    return;
+                }
+
+                if (!document.fullscreenElement && typeof viewerWrapperEl.requestFullscreen === "function") {
+                    await viewerWrapperEl.requestFullscreen();
+                    return;
+                }
+            } catch (error) {
+                console.warn("Native full screen unavailable; using viewer fallback.", error);
+            }
+
+            if (!document.fullscreenElement) {
+                setFallbackFullscreen(true);
+            }
+        }
+
+        function isFullscreenToggleBlocked(target) {
+            return target instanceof Element && !!target.closest(
+                ".fim-hotspot, .fim-product-label, a, iframe"
+            );
         }
 
         function getQueryParam(name) {
@@ -823,10 +976,64 @@
             closeAllProductLabels();
         });
 
+        viewerWrapperEl.addEventListener("dblclick", (event) => {
+            if (Date.now() < suppressDblClickUntil) return;
+            if (isFullscreenToggleBlocked(event.target)) return;
+            event.preventDefault();
+            toggleViewerFullscreen();
+        });
+
+        viewerWrapperEl.addEventListener("pointerup", (event) => {
+            if (event.pointerType !== "touch") return;
+            if (isFullscreenToggleBlocked(event.target)) {
+                lastTouchTap = null;
+                return;
+            }
+
+            const currentTap = {
+                time: performance.now(),
+                x: event.clientX,
+                y: event.clientY
+            };
+            const previousTap = lastTouchTap;
+            lastTouchTap = currentTap;
+
+            if (!previousTap) return;
+
+            const elapsed = currentTap.time - previousTap.time;
+            const distance = Math.hypot(
+                currentTap.x - previousTap.x,
+                currentTap.y - previousTap.y
+            );
+
+            if (elapsed <= 350 && distance <= 40) {
+                event.preventDefault();
+                lastTouchTap = null;
+                suppressDblClickUntil = Date.now() + 700;
+                toggleViewerFullscreen();
+            }
+        });
+
+        viewerWrapperEl.addEventListener("pointercancel", () => {
+            lastTouchTap = null;
+        });
+
         document.addEventListener("keydown", (event) => {
             if (event.key === "Escape") {
                 closeAllProductLabels();
+                if (document.fullscreenElement === viewerWrapperEl) {
+                    event.preventDefault();
+                    document.exitFullscreen().catch((error) => {
+                        console.error("Unable to exit full screen mode.", error);
+                    });
+                } else if (viewerWrapperEl.classList.contains("viewer-wrapper--fullscreen-fallback")) {
+                    setFallbackFullscreen(false);
+                }
             }
+        });
+
+        document.addEventListener("fullscreenchange", () => {
+            syncFullscreenUi();
         });
 
         async function initFirebase() {
@@ -933,6 +1140,7 @@
                     });
                     updateViewerHeight();
                     positionHotspotLayer();
+                    updateFullscreenHintPosition();
                     setStatus('')
 
                     // setStatus(
@@ -954,8 +1162,10 @@
         window.addEventListener("resize", () => {
             updateViewerHeight();
             positionHotspotLayer();
+            updateFullscreenHintPosition();
         });
 
+        syncFullscreenUi();
         main();
     </script>
 </body>
