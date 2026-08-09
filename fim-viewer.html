@@ -769,6 +769,10 @@
             );
             viewerStateEl.classList.add("hidden");
             setStatus("");
+            window.requestAnimationFrame(() => {
+                positionHotspotLayer();
+                updateFullscreenHintPosition();
+            });
         }
 
         function showViewerError(title, message, canRetry = true) {
@@ -1259,10 +1263,14 @@
             const viewerContainer = document.getElementById("fim-viewer-container");
             if (!viewerContainer || !hotspotLayerEl) return;
 
+            const width = viewerContainer.clientWidth;
+            const height = viewerContainer.clientHeight;
+            if (width <= 0 || height <= 0) return;
+
             hotspotLayerEl.style.left = "0";
             hotspotLayerEl.style.top = "0";
-            hotspotLayerEl.style.width = viewerContainer.clientWidth + "px";
-            hotspotLayerEl.style.height = viewerContainer.clientHeight + "px";
+            hotspotLayerEl.style.width = width + "px";
+            hotspotLayerEl.style.height = height + "px";
             hotspotLayerEl.style.right = "auto";
             hotspotLayerEl.style.bottom = "auto";
         }
@@ -1284,8 +1292,6 @@
                     );
                     return;
                 }
-
-                updateViewerHeight();
 
                 showViewerLoading("Connecting securely to the FIM gallery…");
                 const { db } = await initFirebase();
@@ -1323,10 +1329,7 @@
                         const elements = createHotspotElements(h);
                         elements.forEach((el) => hotspotLayerEl.appendChild(el));
                     });
-                    updateViewerHeight();
-                    positionHotspotLayer();
                     showViewerContent();
-                    updateFullscreenHintPosition();
                 };
 
                 imageEl.onerror = () => {
@@ -1352,7 +1355,6 @@
 
         window.addEventListener("resize", () => {
             updateViewerHeight();
-            positionHotspotLayer();
             updateFullscreenHintPosition();
         });
 
