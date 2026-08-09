@@ -157,6 +157,10 @@
             color: #e53e3e;
         }
 
+        .status:empty {
+            display: none;
+        }
+
         .viewer-wrapper {
             background: #ffffff;
             border-radius: 16px;
@@ -168,6 +172,126 @@
             justify-content: center;
             position: relative;
             touch-action: manipulation;
+        }
+
+        .viewer-wrapper--loading .fim-viewer-container,
+        .viewer-wrapper--loading .fullscreen-hint,
+        .viewer-wrapper--error .fim-viewer-container,
+        .viewer-wrapper--error .fullscreen-hint {
+            display: none;
+        }
+
+        .viewer-state {
+            width: min(100%, 420px);
+            padding: 44px 28px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        }
+
+        .viewer-state.hidden {
+            display: none;
+        }
+
+        .viewer-state-icon {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f3e8ff;
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .viewer-state-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(70, 10, 116, 0.2);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: viewer-spin 0.8s linear infinite;
+        }
+
+        .viewer-state-error-mark {
+            display: none;
+        }
+
+        .viewer-wrapper--error .viewer-state-icon {
+            background: #fff1f2;
+            color: #be123c;
+        }
+
+        .viewer-wrapper--error .viewer-state-spinner {
+            display: none;
+        }
+
+        .viewer-wrapper--error .viewer-state-error-mark {
+            display: block;
+        }
+
+        .viewer-state-title {
+            margin: 0 0 10px;
+            color: #1a202c;
+            font-size: 1.25rem;
+        }
+
+        .viewer-state-message {
+            margin: 0 auto;
+            max-width: 340px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .viewer-state-actions {
+            display: none;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .viewer-wrapper--error .viewer-state-actions {
+            display: flex;
+        }
+
+        .viewer-state-button,
+        .viewer-state-link {
+            min-height: 40px;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .viewer-state-button {
+            border: 1px solid var(--accent-color);
+            background: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .viewer-state-button[hidden] {
+            display: none;
+        }
+
+        .viewer-state-link {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            color: var(--text-color);
+        }
+
+        @keyframes viewer-spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         body.viewer-fullscreen-fallback-active {
@@ -537,9 +661,6 @@
                 margin: 0 10px;
             }
 
-            /* main {
-                padding-top: 24px;
-            } */
         }
     </style>
 </head>
@@ -557,35 +678,37 @@
 
     <main>
         <div class="container">
-            <div id="status" class="status">Initializing viewer…</div>
+            <div id="status" class="status" aria-live="polite"></div>
 
-            <div id="viewer-wrapper" class="viewer-wrapper">
+            <div id="viewer-wrapper" class="viewer-wrapper viewer-wrapper--loading">
+                <div id="viewer-state" class="viewer-state" role="status" aria-live="polite">
+                    <div class="viewer-state-icon" aria-hidden="true">
+                        <div class="viewer-state-spinner"></div>
+                        <span class="viewer-state-error-mark">!</span>
+                    </div>
+                    <h2 id="viewer-state-title" class="viewer-state-title">Loading interactive image</h2>
+                    <p id="viewer-state-message" class="viewer-state-message">
+                        Please wait while we prepare this FIM experience.
+                    </p>
+                    <div class="viewer-state-actions">
+                        <button id="viewer-retry" type="button" class="viewer-state-button">Try again</button>
+                        <a href="index.html" class="viewer-state-link">Back to home</a>
+                    </div>
+                </div>
                 <div id="fim-viewer-container" class="fim-viewer-container">
                     <img id="fim-image" alt="FIM image" />
                     <div id="hotspot-layer"></div>
                 </div>
                 <div id="fullscreen-hint" class="fullscreen-hint" aria-hidden="true">
-                    Double click for full screen
+                    Double click image for full screen
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="privacy.html">Privacy Policy</a>
-                    <a href="terms.html">Terms &amp; Conditions</a>
-                    <a href="delete-account.html">Delete Account</a>
-                </div>
-                <p>&copy; <span id="year"></span> Fim It</p>
-            </div>
-        </div>
-    </footer> -->
-
     <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
+        const yearEl = document.getElementById('year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
     </script>
 
     <script type="module">
@@ -612,14 +735,52 @@
         const imageEl = document.getElementById("fim-image");
         const hotspotLayerEl = document.getElementById("hotspot-layer");
         const viewerWrapperEl = document.getElementById("viewer-wrapper");
+        const viewerStateEl = document.getElementById("viewer-state");
+        const viewerStateTitleEl = document.getElementById("viewer-state-title");
+        const viewerStateMessageEl = document.getElementById("viewer-state-message");
+        const viewerRetryEl = document.getElementById("viewer-retry");
         const fullscreenHintEl = document.getElementById("fullscreen-hint");
         let lastTouchTap = null;
         let suppressDblClickUntil = 0;
+        let loadAttemptId = 0;
 
         function setStatus(message, isError = false) {
             if (!statusEl) return;
             statusEl.textContent = message;
             statusEl.classList.toggle("error", !!isError);
+        }
+
+        function showViewerLoading(message = "Please wait while we prepare this FIM experience.") {
+            viewerWrapperEl.classList.add("viewer-wrapper--loading");
+            viewerWrapperEl.classList.remove("viewer-wrapper--error");
+            viewerStateEl.classList.remove("hidden");
+            viewerStateEl.setAttribute("role", "status");
+            viewerStateTitleEl.textContent = "Loading interactive image";
+            viewerStateMessageEl.textContent = message;
+            viewerRetryEl.hidden = true;
+            setStatus("");
+            closeAllProductLabels();
+        }
+
+        function showViewerContent() {
+            viewerWrapperEl.classList.remove(
+                "viewer-wrapper--loading",
+                "viewer-wrapper--error"
+            );
+            viewerStateEl.classList.add("hidden");
+            setStatus("");
+        }
+
+        function showViewerError(title, message, canRetry = true) {
+            viewerWrapperEl.classList.remove("viewer-wrapper--loading");
+            viewerWrapperEl.classList.add("viewer-wrapper--error");
+            viewerStateEl.classList.remove("hidden");
+            viewerStateEl.setAttribute("role", "alert");
+            viewerStateTitleEl.textContent = title;
+            viewerStateMessageEl.textContent = message;
+            viewerRetryEl.hidden = !canRetry;
+            setStatus("");
+            clearHotspots();
         }
 
         function rectanglesOverlap(first, second, padding = 8) {
@@ -712,7 +873,7 @@
 
         function isFullscreenToggleBlocked(target) {
             return target instanceof Element && !!target.closest(
-                ".fim-hotspot, .fim-product-label, a, iframe"
+                ".fim-hotspot, .fim-product-label, .viewer-state, a, button, iframe"
             );
         }
 
@@ -976,6 +1137,10 @@
             closeAllProductLabels();
         });
 
+        viewerRetryEl.addEventListener("click", () => {
+            main();
+        });
+
         viewerWrapperEl.addEventListener("dblclick", (event) => {
             if (Date.now() < suppressDblClickUntil) return;
             if (isFullscreenToggleBlocked(event.target)) return;
@@ -1049,7 +1214,7 @@
                 return { id: directSnap.id, ...directSnap.data() };
             }
 
-            throw new Error("No published FIM data found for image id: " + imageId);
+            throw new Error("No published FIM data found... It may either have been unpublished or never published.");
         }
 
         function parseHotspots(rawHotspots) {
@@ -1103,36 +1268,56 @@
         }
 
         async function main() {
+            const attemptId = ++loadAttemptId;
+            imageEl.onload = null;
+            imageEl.onerror = null;
+            clearHotspots();
+            showViewerLoading();
+
             try {
                 const imageId = getQueryParam("id");
                 if (!imageId) {
-                    setStatus("Missing required query parameter: id", true);
+                    showViewerError(
+                        "Invalid share link",
+                        "This link is incomplete and does not identify a FIM image.",
+                        false
+                    );
                     return;
                 }
 
                 updateViewerHeight();
 
-                setStatus("Connecting to FIM gallery…");
+                showViewerLoading("Connecting securely to the FIM gallery…");
                 const { db } = await initFirebase();
+                if (attemptId !== loadAttemptId) return;
 
-                setStatus("Loading FIM data…");
+                showViewerLoading("Loading the interactive image and its hotspots…");
                 const docData = await fetchFimDocument(db, imageId);
+                if (attemptId !== loadAttemptId) return;
+
                 if (docData.is_published !== true) {
-                    setStatus("This FIM file is not published or is no longer available.", true);
+                    showViewerError(
+                        "This FIM is unavailable",
+                        "It may be private, unpublished, or no longer shared by its owner.",
+                        false
+                    );
                     return;
                 }
 
                 const imageUrl = extractImageUrl(docData);
                 if (!imageUrl) {
-                    setStatus("FIM document loaded but no public image URL was found.", true);
+                    showViewerError(
+                        "Image unavailable",
+                        "The FIM details were found, but its image is not currently available."
+                    );
                     return;
                 }
 
                 const hotspots = parseHotspots(docData.hotspots);
 
-                imageEl.src = imageUrl;
-                
                 imageEl.onload = () => {
+                    if (attemptId !== loadAttemptId) return;
+
                     clearHotspots();
                     hotspots.forEach((h) => {
                         const elements = createHotspotElements(h);
@@ -1140,22 +1325,28 @@
                     });
                     updateViewerHeight();
                     positionHotspotLayer();
+                    showViewerContent();
                     updateFullscreenHintPosition();
-                    setStatus('')
-
-                    // setStatus(
-                    //     hotspots.length
-                    //         ? `Loaded image with ${hotspots.length} hotspot${hotspots.length === 1 ? "" : "s"}.`
-                    //         : "Image loaded with no hotspots."
-                    // );
                 };
 
                 imageEl.onerror = () => {
-                    setStatus("Failed to load the image from the provided URL.", true);
+                    if (attemptId !== loadAttemptId) return;
+
+                    showViewerError(
+                        "Image could not be loaded",
+                        "The image service may be temporarily unavailable. Please check your connection and try again."
+                    );
                 };
+
+                imageEl.src = imageUrl;
             } catch (error) {
                 console.error(error);
-                setStatus("Unable to load FIM data. " + (error && error.message ? error.message : ""), true);
+                if (attemptId !== loadAttemptId) return;
+
+                showViewerError(
+                    "We could not open this FIM",
+                    (error && error.message ? error.message : "Something went wrong while loading the interactive image. Please try again in a moment.")
+                );
             }
         }
 
